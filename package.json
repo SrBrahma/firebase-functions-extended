@@ -1,5 +1,5 @@
 {
-  "name": "cloud-functions-extended-oncall",
+  "name": "firebase-functions-extended",
   "version": "1.0.3",
   "description": "Extended onCall function for Firebase Cloud Functions",
   "main": "lib/index.js",
