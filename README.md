@@ -1,6 +1,6 @@
-# Firebase Functions Extended
-
 <div align="center">
+  
+  # Firebase Functions Extended
   
  [![npm version](https://badge.fury.io/js/firebase-functions-extended.svg)](https://badge.fury.io/js/firebase-functions-extended)
  
