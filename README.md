@@ -1,4 +1,4 @@
-# Firebase-Cloud-Functions-Extended-HTTPS-onCall
+# Firebase Functions Extended
 
 <div align="center">
   
@@ -20,3 +20,6 @@ or
 `yarn add firebase-functions-extended`
 
 It also requires the installation of [firebase-functions](https://github.com/firebase/firebase-functions) and [zod](https://github.com/vriad/zod)
+
+# Usage
+
