@@ -1,1 +1,0 @@
-I will leave the /src dir in the npm package so you can easily read it if you want to.
