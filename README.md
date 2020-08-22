@@ -2,7 +2,7 @@
   
   # Firebase Functions Extended
   
- [![npm version](https://badge.fury.io/js/firebase-functions-extended.svg)](https://badge.fury.io/js/firebase-functions-extended)
+ [![npm version](https://badge.fury.io/js/firebase-functions-extended.svg)](https://www.npmjs.com/package/firebase-functions-extended)
  
 </div>
 
