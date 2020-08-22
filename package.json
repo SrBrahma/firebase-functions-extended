@@ -1,14 +1,11 @@
 {
   "name": "cloud-functions-extended-oncall",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Extended onCall function for Firebase Cloud Functions",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "publish": "tsc -d && npm publish",
-    "publish:patch": "tsc -d && npm version patch && npm publish",
-    "publish:minor": "tsc -d && npm version minor && npm publish",
-    "publish:major": "tsc -d && npm version major && publish"
+    "publish": "tsc -d && npm publish"
   },
   "repository": {
     "type": "git",
