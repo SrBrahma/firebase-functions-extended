@@ -53,7 +53,10 @@ function InternalExtError(
   caller: Caller
 ) {
   // _callerToken with _ to keep it on the end of the json for better readibility on firebase console
-  console.error(new Error(JSON.stringify({ code, data, message, _callerToken: caller.token })));
+  console.error(new Error(JSON.stringify(
+    { code, data, message, _callerToken: caller.token },
+    null, 2 // Make the JSON pretty with 2-space-identation and new lines
+  )));
   return new functions.https.HttpsError(code, message);
 }
 
