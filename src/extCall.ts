@@ -3,6 +3,9 @@ import { Caller } from './caller';
 import * as zod from 'zod';
 import { ZodRawShape } from 'zod/lib/src/types/base';
 
+// For multi-line JSON error https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
+import { debug, info, error, warn } from 'firebase-functions/lib/logger';
+
 
 // Changing region. Used it only here and not directly on functions on ./firebase.ts,
 // Because this doc says background functions with Realtime DB as Trigger should use
@@ -53,7 +56,7 @@ function InternalExtError(
   caller: Caller
 ) {
   // _callerToken with _ to keep it on the end of the json for better readibility on firebase console
-  console.error(new Error(JSON.stringify(
+  error(new Error(JSON.stringify(
     { code, data, message, _callerToken: caller.token },
     null, 2 // Make the JSON pretty with 2-space-identation and new lines
   )));
