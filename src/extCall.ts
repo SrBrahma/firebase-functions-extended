@@ -50,8 +50,14 @@ type Handler<T extends ZodRawShape> = {
 
 type ExtCall<T extends ZodRawShape> = {
   zodObj: T,
+  /** An array of functions that will be run after the zod validation and before the handler function.
+   *
+   *  Useful for reusing commom checks in your code. To deny the call, use "throw ExtError(...)",
+   *  like you would do with the handler function.
+  */
+  conditions?: Array<(args: Handler<T>) => any | Promise<any>>;
   handler: (args: Handler<T>) => any | Promise<any>,
-  /** Throws error if false and if caller is anonymous */
+  /** Throws error if (false and caller is anonymous) */
   allowAnonymous?: true;
   /** You can specify a region diferent of the default one (`us-central1` or the one set by `setExtCallDefaultRegion()`) */
   region?: string;
@@ -77,26 +83,37 @@ function InternalExtError(
 
 // TODO: Optional zodObj. Won't use now, so leaving it for later
 // TODO: Take the language from data (if there is) and pass it to the caller
-export function extCall<T extends ZodRawShape>({ zodObj, handler, allowAnonymous, region }: ExtCall<T>): onCallRtn {
+export function extCall<T extends ZodRawShape>({ zodObj, conditions, handler, allowAnonymous, region }: ExtCall<T>): onCallRtn {
 
   return functions.region(region || defaultRegion).https.onCall(async (data, context) => {
     // TODO: wrapping try/catch
     const schema = zod.object(zodObj);
     const caller = new Caller(context);
 
+
     if (!allowAnonymous && caller.isAnonymous)
       throw InternalExtError('Usuário não pode ser anônimo.', 'unauthenticated', data, caller);
 
 
     // TODO: add support for zod invalid schema message
-    if (schema.check(data)) {
-      await handler({
-        data,
-        caller,
-        ExtError: (message, code = 'internal') => InternalExtError(message, code, data, caller)
-      });
-    }
-    else
+    if (!schema.check(data))
       throw InternalExtError('Argumentos inválidos', 'invalid-argument', data, caller);
-  });
+
+    // throw not needed in InternalExtError belows, as the ExtError are suposed to be called with throw.
+    if (conditions)
+      for (const condition of conditions)
+        condition({
+          data,
+          caller,
+          ExtError: (message, code = 'internal') => InternalExtError(message, code, data, caller)
+        });
+
+    await handler({
+      data,
+      caller,
+      ExtError: (message, code = 'internal') => InternalExtError(message, code, data, caller)
+    });
+  }
+
+  );
 }
