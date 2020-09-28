@@ -23,3 +23,11 @@ or
 It also requires the installation of [firebase-functions](https://github.com/firebase/firebase-functions) and [zod](https://github.com/vriad/zod)
 
 # Usage
+
+# Roadmap
+
+* Allow multi-region (functions.region() is variadic)
+
+* Write this README
+
+* Internationalization -> Also add way to change error string to invalid anonymous caller and invalid args error
