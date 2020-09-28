@@ -20,13 +20,11 @@ or
 
 `yarn add firebase-functions-extended`
 
-It also requires the installation of [firebase-functions](https://github.com/firebase/firebase-functions) and [zod](https://github.com/vriad/zod)
+It also requires the installation of [firebase-functions](https://github.com/firebase/firebase-functions) and [zod](https://github.com/vriad/zod). Zod v2 beta isn't working right now, use ^v1.
 
 # Usage
 
 # Roadmap
-
-* Allow multi-region (functions.region() is variadic)
 
 * Write this README
 
