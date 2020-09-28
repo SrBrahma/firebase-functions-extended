@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import functions from 'firebase-functions';
+import * as functions from 'firebase-functions';
+import * as z from 'zod';
 import { Caller } from './caller';
-import z from 'zod';
 
 // For multi-line JSON error https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
 import Logger from 'firebase-functions/lib/logger';

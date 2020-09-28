@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
 // Allow {} to be used
 
-import functions from 'firebase-functions';
+// Must be * as X for functions and zod, else, error in downloaded package
+import * as functions from 'firebase-functions';
+import * as z from 'zod';
 import { Caller } from '.';
 import { obj, Id } from './utils';
-import z from 'zod';
 
 
 // Return ReturnType<T> if T is a function.
