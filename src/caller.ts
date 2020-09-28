@@ -1,6 +1,6 @@
 // Caller -> The one calling the function.
-import { https } from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import type { https } from 'firebase-functions';
+import admin from 'firebase-admin';
 
 
 // Properties that apply to Caller and User, must be in User (like userId).

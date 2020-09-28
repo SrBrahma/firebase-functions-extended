@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 // Allow {} to be used
 
-import * as functions from 'firebase-functions';
+import functions from 'firebase-functions';
 import { Caller } from '.';
 import { obj, Id } from './utils';
 import z from 'zod';
