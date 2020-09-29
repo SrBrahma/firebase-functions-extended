@@ -8,14 +8,13 @@ import { Caller } from '.';
 import { obj, Id } from './utils';
 
 
-// Return ReturnType<T> if T is a function.
+// Why I did this? I should get some sleep :X
+type Rtn2<T> = T extends ((...args: any) => obj)
+  ? ReturnType<T>
+  : (T extends (...args: any) => PromiseLike<infer U>
+    ? U
+    : {});
 
-
-type Rtn2<T> = T extends undefined
-  ? {}
-  : T extends ((...args: any) => obj) ? ReturnType<T> : {};
-
-// type b = {} extends undefined ? true : false;
 
 export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   /** The data the client (caller) sent. */
@@ -31,6 +30,16 @@ export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   ExtError: (message: string, code?: functions.https.FunctionsErrorCode) => any;
 };
 
+/** Will return the DB using the dbId */
+export const auxGetCallerName: HandlerF<{}, {}, Promise<{ callerName: string | null; }>> = async (
+  { caller }
+) => {
+  return { callerName: (await '5') };
+};
+
+type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
+
+type a = HandlerF<{}, {}, Promise<{ callerName: string | null; }>>;
 
 // type a = (() => number) extends (() => void) ? true : false // returns true
 export type HandlerF<Data extends obj = obj, AuxData extends obj = obj, R = obj | void> =
