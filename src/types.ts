@@ -35,19 +35,9 @@ export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   ExtError: (message: string, code?: functions.https.FunctionsErrorCode) => any;
 };
 
-/** Will return the DB using the dbId */
-export const auxGetCallerName: HandlerF<{}, {}, Promise<{ callerName: string | null; }>> = async (
-  { caller }
-) => {
-  return { callerName: (await '5') };
-};
-
-type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
-
-type a = HandlerF<{}, {}, Promise<{ callerName: string | null; }>>;
 
 // type a = (() => number) extends (() => void) ? true : false // returns true
-export type HandlerF<Data extends obj = obj, AuxData extends obj = obj, R = obj | void> =
+export type HandlerF<Data extends obj = obj, AuxData extends obj = obj, R = obj | void | Promise<any>> =
   (args: Handler<Data, AuxData>) => R;
 
 export type Joiner<
