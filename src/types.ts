@@ -8,14 +8,18 @@ import { Caller } from '.';
 import { obj, Id } from './utils';
 
 
-// Return ReturnType<T> if T is a function.
+// Thanks to https://stackoverflow.com/a/49889856/10247962
+// for the Promise return! :)
+type Rtn2<T> = T extends ((...args: any) => obj)
+  ? ReturnType<T>
+  : (T extends (...args: any) => PromiseLike<infer U>
+    ? (U extends obj
+      ? U
+      : {}
+    )
+    : {}
+  );
 
-
-type Rtn2<T> = T extends undefined
-  ? {}
-  : T extends ((...args: any) => obj) ? ReturnType<T> : {};
-
-// type b = {} extends undefined ? true : false;
 
 export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   /** The data the client (caller) sent. */
@@ -54,5 +58,3 @@ export type Joiner<
     Id<Rtn2<A> & Rtn2<B> & Rtn2<C> & Rtn2<D> & Rtn2<E> & Rtn2<F> & Rtn2<G> & Rtn2<H> & Rtn2<I>>,
     R
   >;
-
-type a = Id<Rtn2<() => { a: number; }> & Rtn2<{}>>;
