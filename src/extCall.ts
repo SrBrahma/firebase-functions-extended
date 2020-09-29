@@ -179,9 +179,9 @@ export function extCall<
 // const auxA: HandlerF<{ dbId: number; }, obj, { db: string; }> = ({ data }) => {
 //   return { db: data.dbId + '4' };
 // };
-// const auxB: HandlerF<{ dbId: number; }, obj, Promise<true>> = async () => {
+// const auxB: HandlerF<{ dbId: number; }, obj, Promise<{ db2: string; }>> = async () => {
 //   await true;
-//   return true; //{ db2: '4' };
+//   return { db2: '4' };
 // };
 // const a = extCall({
 //   zod: z.object({
