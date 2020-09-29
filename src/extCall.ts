@@ -83,7 +83,7 @@ export function extCall<
   G extends Joiner<Z, A, B, C, D, E, F>,
   H extends Joiner<Z, A, B, C, D, E, F, G>,
   I extends Joiner<Z, A, B, C, D, E, F, G, H>
->({ zod: schema, aux, handler, allowAnonymous, region }: {
+>({ zod: schema, aux, handler, allowAnonymous = true, region }: {
   zod: Z,
   /**
    * An array of auxiliary functions that will be run after the zod validation and before the handler function.
@@ -96,6 +96,7 @@ export function extCall<
   */
   aux?: [A?, B?, C?, D?, E?, F?, G?, H?, I?];
 
+  /** Your main function that will be run after the zod validation and after the aux functions execution, if any. */
   handler: Joiner<Z, A, B, C, D, E, F, G, H, I, any>,
 
   /**
@@ -103,7 +104,7 @@ export function extCall<
    *
    * Defaults to `true`.
    */
-  allowAnonymous?: true;
+  allowAnonymous?: boolean;
 
   /**
    * You can specify a region diferent of the default one (`us-central1` or the one set
