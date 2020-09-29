@@ -74,7 +74,7 @@ function InternalExtError(
  */
 export function extCall<
   Z extends z.ZodType<any>,
-  A extends HandlerF<z.infer<Z>, {}, {}>,
+  A extends HandlerF<z.infer<Z>, {}>, // {} = No previous auxData
   B extends Joiner<Z, A>,
   C extends Joiner<Z, A, B>,
   D extends Joiner<Z, A, B, C>,

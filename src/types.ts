@@ -33,7 +33,7 @@ export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
 
 
 // type a = (() => number) extends (() => void) ? true : false // returns true
-export type HandlerF<Data extends obj = obj, AuxData extends obj = obj, R = obj> =
+export type HandlerF<Data extends obj = obj, AuxData extends obj = obj, R = obj | void> =
   (args: Handler<Data, AuxData>) => R;
 
 export type Joiner<
