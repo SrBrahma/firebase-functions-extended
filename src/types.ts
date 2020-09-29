@@ -37,6 +37,7 @@ export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
 
 
 // type a = (() => number) extends (() => void) ? true : false // returns true
+// When changing R, also change on Joiner last param
 export type HandlerF<Data extends obj = obj, AuxData extends obj = obj, R = obj | void | Promise<any>> =
   (args: Handler<Data, AuxData>) => R;
 
@@ -51,7 +52,7 @@ export type Joiner<
   G extends HandlerF<obj, any> = HandlerF<obj, {}, {}>,
   H extends HandlerF<obj, any> = HandlerF<obj, {}, {}>,
   I extends HandlerF<obj, any> = HandlerF<obj, {}, {}>,
-  R = {}
+  R = obj | void | Promise<any>
   > =
   HandlerF<
     z.infer<Z>,

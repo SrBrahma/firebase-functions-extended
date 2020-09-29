@@ -5,7 +5,8 @@ import { Caller } from './caller';
 
 // For multi-line JSON error https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
 import Logger from 'firebase-functions/lib/logger';
-import { isObject, obj } from './utils';
+import { isObject } from './utils';
+import type { obj } from './utils';
 import type { HandlerF, Joiner } from './types';
 
 
@@ -176,12 +177,14 @@ export function extCall<
 }
 
 // Testing:
-// const auxA: HandlerF<{ dbId: number; }, obj, { db: string; }> = ({ data }) => {
+// const auxNominal: HandlerF<{ dbId: number; }, obj, { db: string; }> = ({ data }) => {
 //   return { db: data.dbId + '4' };
 // };
-// const auxB: HandlerF<{ dbId: number; }, obj, Promise<{ db2: string; }>> = async () => {
+// const auxPromise: HandlerF<{ dbId: number; }, obj, Promise<{ db2: string; }>> = async () => {
 //   await true;
 //   return { db2: '4' };
+// };
+// const auxVoid: HandlerF<{ dbId: number; }, obj> = async () => {
 // };
 // const a = extCall({
 //   zod: z.object({
@@ -189,8 +192,9 @@ export function extCall<
 //     dbId: z.number(),
 //   }),
 //   aux: [
-//     auxA,
-//     auxB
+//     auxNominal,
+//     auxPromise,
+//     auxVoid
 //   ],
 //   handler: ({ auxData }) => { true; }
 // });
