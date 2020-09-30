@@ -6,7 +6,6 @@ import { Caller } from './caller';
 // For multi-line JSON error https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
 import Logger from 'firebase-functions/lib/logger';
 import { isObject } from './utils';
-import type { obj } from './utils';
 import type { HandlerF, Joiner } from './types';
 
 
@@ -133,17 +132,18 @@ export function extCall<
     func = functions.region(region || defaultRegion);
 
   return func.https.onCall(async (data, context) => {
-    // TODO: wrapping try/catch
-    // Would this always break the cold start bypass?
 
     let calledError = false;
 
     const caller = new Caller(context);
 
     // Relative to this extCall
-    function thisExtError(message: string, code: functions.https.FunctionsErrorCode = 'internal') {
+    function thisExtError(arg0: any, arg1?: any): any {
       calledError = true;
-      return InternalExtError(message, code, data, caller);
+      if (Array.isArray(arg0))
+        return InternalExtError(arg0[0], arg0[1] || 'internal', data, caller);
+      else
+        return InternalExtError(arg0, arg1 || 'internal', data, caller);
     }
 
     try {

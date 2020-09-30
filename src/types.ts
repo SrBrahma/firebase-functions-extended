@@ -20,6 +20,7 @@ type Rtn2<T> = T extends ((...args: any) => obj)
     : {}
   );
 
+export type ExtErrorT = [message: string, code?: functions.https.FunctionsErrorCode];
 
 export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   /** The data the client (caller) sent. */
@@ -30,11 +31,10 @@ export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   caller: Caller;
   /**
    * Throw this if invalid stuff happens.
-   *
-   * */
-  ExtError: (message: string, code?: functions.https.FunctionsErrorCode) => any;
+   */
+  ExtError: (((message: string, code?: functions.https.FunctionsErrorCode) => any)
+    & ((args: ExtErrorT) => any));
 };
-
 
 // type a = (() => number) extends (() => void) ? true : false // returns true
 // When changing R, also change on Joiner last param

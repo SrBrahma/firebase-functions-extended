@@ -1,5 +1,9 @@
 <!-- * `zod` property is now optional. You now have to  -->
 
+# 2.1.0
+
+* Added array support for `ExtError` parameter, and `ExtErrorT` type export, which is this array type. In a soon future, will also accepts an object containing multi-language error messages.
+
 
 # Major 2.0.0
 
