@@ -4,6 +4,8 @@
 
 * Added array support for `ExtError` parameter, and `ExtErrorT` type export, which is this array type. In a soon future, will also accepts an object containing multi-language error messages.
 
+* Added `ExtErrorMessages`, a function that creates an object of `ExtErrorT`s.
+
 
 # Major 2.0.0
 

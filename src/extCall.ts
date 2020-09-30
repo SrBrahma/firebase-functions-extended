@@ -6,7 +6,7 @@ import { Caller } from './caller';
 // For multi-line JSON error https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
 import Logger from 'firebase-functions/lib/logger';
 import { isObject } from './utils';
-import type { HandlerF, Joiner } from './types';
+import type { ExtErrorT, HandlerF, Joiner } from './types';
 
 
 
@@ -174,6 +174,11 @@ export function extCall<
         throw err;
     }
   });
+}
+
+
+export function ExtErrorMessages<T extends Record<string, ExtErrorT>>(args: T): T {
+  return args;
 }
 
 // Testing:
