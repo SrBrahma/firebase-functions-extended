@@ -168,8 +168,10 @@ export function extCall<
       await handler?.({ data, caller, ExtError: thisExtError, auxData });
     }
     catch (err) {
-      if (!calledError)
+      if (!calledError) {
+        Logger.error(err);
         throw thisExtError('Ocorreu um erro no servidor, tente novamente.', 'internal');
+      }
       else // Rethrow the error
         throw err;
     }
