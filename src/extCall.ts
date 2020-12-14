@@ -158,7 +158,7 @@ export function extCall<
     }
 
     try {
-      if (!allowNonAuthed && caller.isAuthed)
+      if (!allowNonAuthed && !caller.isAuthed)
         // TODO: better error differentiation between those two?
         throw thisExtError('Você precisa estar autenticado para executar esta ação.', 'unauthenticated');
 

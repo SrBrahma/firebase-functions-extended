@@ -1,6 +1,6 @@
 <!-- * `zod` property is now optional. You now have to  -->
 
-# 2.2.0 - December 13 2020
+# 2.2.0-1 - December 13 2020
 
 Added allowNonAuthed param to ExtCall.
 
