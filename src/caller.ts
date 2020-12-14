@@ -1,6 +1,6 @@
 // Caller -> The one calling the function.
 import type { https } from 'firebase-functions';
-import admin from 'firebase-admin';
+import type { auth } from 'firebase-admin';
 
 
 // Properties that apply to Caller and User, must be in User (like userId).
@@ -13,11 +13,11 @@ export class Caller {
     this.language = language;
   }
 
-  // Will, by default, always return true as Cloud Functions callers must be authed, unless
-  // you change it on settings somewhere.
+  /** Will, by default, always return true as Cloud Functions callers must be authed, unless
+   * you allow it in allowNonAuthed param in ExtCall or in Firebase console. */
   get isAuthed(): boolean { return !!this.context.auth; }
 
-  get token(): admin.auth.DecodedIdToken | undefined { return this.context.auth?.token; }
+  get token(): auth.DecodedIdToken | undefined { return this.context.auth?.token; }
 
   // [Google, facebook, "anonymous"] etc. If wanted, add here the exact strings of the others.
   get provider(): any { return this.token?.firebase.sign_in_provider; }

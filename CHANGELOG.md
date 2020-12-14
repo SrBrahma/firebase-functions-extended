@@ -1,11 +1,19 @@
 <!-- * `zod` property is now optional. You now have to  -->
 
+# 2.2.0 - December 13 2020
+
+Added allowNonAuthed param to ExtCall.
+
+
+# 2.1.4
+
+Fixed Error throwing
+
 # 2.1.0
 
 * Added array support for `ExtError` parameter, and `ExtErrorT` type export, which is this array type. In a soon future, will also accepts an object containing multi-language error messages.
 
 * Added `ExtErrorMessages`, a function that creates an object of `ExtErrorT`s.
-
 
 # Major 2.0.0
 

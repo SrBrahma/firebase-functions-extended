@@ -4,7 +4,7 @@ import * as z from 'zod';
 import { Caller } from './caller';
 
 // For multi-line JSON error https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
-import Logger from 'firebase-functions/lib/logger';
+import * as Logger from 'firebase-functions/lib/logger';
 import { isObject } from './utils';
 import type { ExtErrorT, HandlerF, Joiner } from './types';
 
@@ -83,7 +83,7 @@ export function extCall<
   G extends Joiner<Z, A, B, C, D, E, F>,
   H extends Joiner<Z, A, B, C, D, E, F, G>,
   I extends Joiner<Z, A, B, C, D, E, F, G, H>
->({ zod: schema, aux, handler, allowAnonymous = true, region }: {
+>({ zod: schema, aux, handler, allowAnonymous = true, allowNonAuthed = false, region }: {
   zod: Z,
   /**
    * An array of auxiliary functions that will be run after the zod validation and before the handler function.
@@ -105,6 +105,17 @@ export function extCall<
    * Defaults to `true`.
    */
   allowAnonymous?: boolean;
+
+
+  /**
+   * Throws error if false and caller isn't authed (with any provider or anonymous).
+   *
+   * Firebase console has an option for that, but here it allows a better control over that,
+   * and non-authed could call functions in emulator environment.
+   *
+   * Defaults to `false`
+   */
+  allowNonAuthed?: boolean;
 
   /**
    * You can specify a region diferent of the default one (`us-central1` or the one set
@@ -147,9 +158,12 @@ export function extCall<
     }
 
     try {
+      if (!allowNonAuthed && caller.isAuthed)
+        // TODO: better error differentiation between those two?
+        throw thisExtError('Você precisa estar autenticado para executar esta ação.', 'unauthenticated');
 
       if (!allowAnonymous && caller.isAnonymous)
-        throw thisExtError('Usuário não pode ser anônimo.', 'unauthenticated');
+        throw thisExtError('Você precisa estar logado para executar esta ação.', 'unauthenticated');
 
       // TODO: add support for zod invalid schema message
       if (!schema.check(data))
