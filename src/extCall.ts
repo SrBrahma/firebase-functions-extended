@@ -5,43 +5,61 @@ import { Caller } from './caller';
 
 // For multi-line JSON error https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
 import * as Logger from 'firebase-functions/lib/logger';
-import { isObject } from './utils';
+import { isObject, obj } from './utils';
 import type { ExtErrorT, HandlerF, Joiner } from './types';
 
-
-
-// https://firebase.google.com/docs/functions/locations#best_practices_for_changing_region
-// Default Firebase value. It's the best for Realtime Database, as it always uses us-central1
-const constDefaultRegion = 'us-central1';
-let defaultRegion = constDefaultRegion;
 
 type onCallRtn = ReturnType<typeof functions.https.onCall>;
 
 
+
+let defaultRegion: string | string[];
+let defaultAllowAnonymous: boolean;
+let defaultAllowNonAuthed: boolean;
+
+
+
 /**
- * Should be called before defining your extCalls.
+ * Set the default values for all extCalls(). They can still be individually customized.
  *
- * You can also specify a region for a specific function by using the
- * `region` property in the extCall argument.
- *
- * Warning: If your function uses Realtime Database, use the default 'us-central1' region, as both servers
- * will be closer and the function execution will be faster.
- *
- * https://firebase.google.com/docs/functions/locations#best_practices_for_changing_region
- * @param regionId - default is `'us-central1'`
+ * Should be called before defining your extCalls, if you want to change any default.
  */
-export function setExtCallDefaultRegion(regionId: string = constDefaultRegion): void { defaultRegion = regionId; }
+export function setExtCallDefaults(params?: {
+  /**
+  * The default region to deploy this function.
+  *
+  * If your function uses Realtime Database, use/keep the default 'us-central1' region, as both servers
+  * will be closer and the function execution will be faster.
+  *
+  * You may also pass an array of regions, so they will be deployed to all of them.
+  *
+  * https://firebase.google.com/docs/functions/locations#best_practices_for_changing_region
+  * @param region - default is `'us-central1'`
+  */
+  region?: string;
 
+  /**
+   * If anonymous authed users can execute the functions.
+   *
+   * Defaults to `true`.
+  */
+  allowAnonymous?: boolean;
 
-/** ONLY adds 'caller' var and uses the set region. Maybe you will want to use it.  */
-export function onCallWithCaller(handler: (data: any, caller: Caller) => any | Promise<any>): onCallRtn {
-  // Changing region. Used it only here and not directly on functions on ./firebase.ts,
-  // Because this doc says background functions with Realtime DB as Trigger should use
-  // the default region ('use-central1').
-  // https://firebase.google.com/docs/functions/locations#best_practices_for_changing_region
-  return functions.region(defaultRegion).https.onCall((data, context) =>
-    handler(data, new Caller(context)));
+  /**
+   * If non authed callers can execute the function.
+   *
+   * Defaults to `false`.
+   */
+  allowNonAuthed?: boolean;
+}): void {
+  defaultRegion = params?.region ?? 'us-central1';
+  defaultAllowAnonymous = params?.allowAnonymous ?? true;
+  defaultAllowNonAuthed = params?.allowNonAuthed ?? false;
 }
+
+setExtCallDefaults();
+
+
 
 
 // TODO: add obj to message type, to allow languages given by the caller.
@@ -83,7 +101,11 @@ export function extCall<
   G extends Joiner<Z, A, B, C, D, E, F>,
   H extends Joiner<Z, A, B, C, D, E, F, G>,
   I extends Joiner<Z, A, B, C, D, E, F, G, H>
->({ zod: schema, aux, handler, allowAnonymous = true, allowNonAuthed = false, region }: {
+>({ zod: schema, aux, handler,
+  allowAnonymous = defaultAllowAnonymous,
+  allowNonAuthed = defaultAllowNonAuthed,
+  region = defaultRegion
+}: {
   zod: Z,
   /**
    * An array of auxiliary functions that will be run after the zod validation and before the handler function.
@@ -100,38 +122,30 @@ export function extCall<
   handler: Joiner<Z, A, B, C, D, E, F, G, H, I, any>,
 
   /**
-   * Throws error if set to false and caller is anonymous.
+   * If anonymous authed users can execute the functions.  Throws error if false and caller is anonymous.
    *
-   * Defaults to `true`.
-   */
+   * Defaults to `true` or the value set in setExtCallDefaults().
+  */
   allowAnonymous?: boolean;
 
-
   /**
-   * Throws error if false and caller isn't authed (with any provider or anonymous).
+   * If non authed callers can execute the function. Throws error if false and caller isn't authed.
    *
-   * Firebase console has an option for that, but here it allows a better control over that,
-   * and non-authed could call functions in emulator environment.
-   *
-   * Defaults to `false`
+   * Defaults to `false` or the value set in setExtCallDefaults().
    */
   allowNonAuthed?: boolean;
 
   /**
-   * You can specify a region diferent of the default one (`us-central1` or the one set
-   * by `setExtCallDefaultRegion()`)
+   * The region that this function will be deployed. (Read the link below to learn about and get the valid values)
    *
    * You may also pass an array of regions, so this function will be deployed to all of them.
    *
-   * Warning: If your function uses Realtime Database, use the default 'us-central1' region, as both servers
+   * If your function uses Realtime Database, use/keep the default 'us-central1' region, as both servers
    * will be closer and the function execution will be faster.
    *
    * https://firebase.google.com/docs/functions/locations#best_practices_for_changing_region
    * */
   region?: string | string[];
-
-  // TODO:
-  // language:
 
 }): onCallRtn {
 
@@ -140,13 +154,15 @@ export function extCall<
   if (Array.isArray(region))
     func = functions.region(...region); // Couldn't do a ternary while destructuring the variadic
   else
-    func = functions.region(region || defaultRegion);
+    func = functions.region(region);
 
-  return func.https.onCall(async (data, context) => {
+  // clientVersion is useful to tell the client to update his app.
+  return func.https.onCall(async (entireData: { data: obj, clientVersion: string, lang: string; }, context) => {
 
     let calledError = false;
 
-    const caller = new Caller(context);
+    const caller = new Caller({ context, clientVersion: entireData.clientVersion, lang: entireData.lang });
+    const { data } = entireData;
 
     // Relative to this extCall
     function thisExtError(arg0: any, arg1?: any): any {

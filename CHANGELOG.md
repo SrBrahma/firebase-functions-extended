@@ -1,5 +1,24 @@
 <!-- * `zod` property is now optional. You now have to  -->
 
+# 3.0.0 - December 15 2020
+
+* Now Caller have `lang` (language) and `clientVersion` properties. No need to change the functions implementations, but, you must change the function calls in your client.
+
+You may have something like this in your client, assuming lang and clientVersion are in scope:
+```
+function callExtFun(functionId: string, data: Record<string, unknown>) {
+  functions.httpsCallable(functionId)({ data, lang, clientVersion });
+}
+```
+
+This is a way for near-future i18n implementations and a more future-proof design. Being a object, this also allows another metainfos to be sent using this pattern.
+
+* Removed `setExtCallDefaultRegion()`.
+* Added `setExtCallDefaults()`. This implements the one above, `allowAnonymous` and `allowNonAuthed`.
+
+* Removed `onCallWithCaller()`. Not really useful.
+
+
 # 2.2.0-1 - December 13 2020
 
 Added allowNonAuthed param to ExtCall.

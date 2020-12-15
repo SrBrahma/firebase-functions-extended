@@ -1,6 +1,6 @@
 {
   "name": "firebase-functions-extended",
-  "version": "2.2.1",
+  "version": "3.0.0",
   "description": "Extended onCall function for Firebase Cloud Functions",
   "main": "lib/index.js",
   "scripts": {
@@ -8,10 +8,11 @@
     "build": "tsc -d",
     "deploy": "npm run build && npm publish",
     "major": "npm --no-git-tag-version version major",
+    "majorD": "npm run build && npm run major && npm publish",
     "minor": "npm --no-git-tag-version version minor",
-    "minorD": "npm run minor && npm run deploy",
+    "minorD": "npm run build && npm run minor && npm publish",
     "patch": "npm --no-git-tag-version version patch",
-    "patchD": "npm run patch && npm run deploy"
+    "patchD": "npm run build && npm run patch && npm publish"
   },
   "repository": {
     "type": "git",

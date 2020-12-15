@@ -6,11 +6,15 @@ import type { auth } from 'firebase-admin';
 // Properties that apply to Caller and User, must be in User (like userId).
 export class Caller {
   context: https.CallableContext;
-  readonly language: string | undefined; // Still unused
 
-  constructor(context: https.CallableContext, language?: string) {
-    this.context = context;
-    this.language = language;
+  readonly lang: string;
+  readonly clientVersion: string;
+
+
+  constructor(params: { context: https.CallableContext, lang: string, clientVersion: string; }) {
+    this.context = params.context;
+    this.lang = params.lang;
+    this.clientVersion = params.clientVersion;
   }
 
   /** Will, by default, always return true as Cloud Functions callers must be authed, unless
