@@ -195,7 +195,7 @@ export function extCall<
             Object.assign(auxData, rtn);
         }
 
-      await handler?.({ data, caller, ExtError: thisExtError, auxData });
+      return await handler?.({ data, caller, ExtError: thisExtError, auxData });
     }
     catch (err) {
       if (!calledError) {

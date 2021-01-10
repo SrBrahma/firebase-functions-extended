@@ -1,4 +1,7 @@
-<!-- * `zod` property is now optional. You now have to  -->
+# 3.0.1 - January 10th 2020
+
+* Fixed extCall return.
+
 
 # 3.0.0 - December 15 2020
 
