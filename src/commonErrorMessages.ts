@@ -1,4 +1,6 @@
 import { ErrorsMessagesDict } from './i18n';
+import { Id } from './utils';
+
 
 export enum CommonErrorsId {
   /** Caller not authed (not anon, not google etc) */
@@ -12,10 +14,8 @@ export enum CommonErrorsId {
   unknown = 'unknown'
 }
 
-export enum CommonErrorsDefaultLanguages {
-  en = 'en',
-  pt = 'pt'
-}
+// Unused until ./i18n/[*1] fix
+// export type CommonErrorsDefaultLanguages = 'en' | 'pt'
 
 // TODO add a package identification to those errors, but still user friendly.
 /** The default error messages for ExtCall common errors, like caller not authed,
@@ -24,20 +24,24 @@ export enum CommonErrorsDefaultLanguages {
  * If you want to provide your own messages for them and or want to include other languages besides
  * the current `en` and `pt`, call
  */
-export const defaultCommonErrorMessagesDict: ErrorsMessagesDict<CommonErrorsId, CommonErrorsDefaultLanguages> = {
+export const defaultCommonErrorMessagesDict: Id<ErrorsMessagesDict<CommonErrorsId>> = {
   authRequired: {
+    _code: 'unauthenticated',
     en: 'You must be logged in to perform this action.',
     pt: 'Você precisa estar logado para executar esta ação.',
   },
   cantBeAnon: {
+    _code: 'unauthenticated',
     en: 'You must be properly logged in to perform this action.',
     pt: 'Você precisa estar devidamente logado para executar esta ação.',
   },
   invalidArgs: {
+    _code: 'invalid-argument',
     en: 'Invalid arguments.',
     pt: 'Argumentos inválidos.',
   },
   unknown: {
+    _code: 'internal',
     en: 'An error occurred in the server, try again.',
     pt: 'Ocorreu um erro no servidor, tente novamente.',
   }
@@ -52,7 +56,7 @@ export let commonErrorMessages = defaultCommonErrorMessagesDict;
  *
  * @default - the default dictionary. No need to call this function to set it if not changed. */
 export function setCommonErrorMessagesDict(
-  dict: ErrorsMessagesDict<CommonErrorsId, CommonErrorsDefaultLanguages> = defaultCommonErrorMessagesDict
+  dict: ErrorsMessagesDict<CommonErrorsId> = defaultCommonErrorMessagesDict
 ): void {
   commonErrorMessages = dict;
 }

@@ -7,7 +7,7 @@ import { Caller } from './Caller';
 import * as Logger from 'firebase-functions/lib/logger';
 import { isObject, obj } from './utils';
 import type { HandlerF, Joiner } from './types';
-import { errorMessageInLanguage, ErrorMessagePerLanguage, fallbackLanguage } from './i18n';
+import { ErrorDictItem, errorMessageInLanguage, fallbackLanguage } from './i18n';
 import { commonErrorMessages } from './commonErrorMessages';
 
 
@@ -156,33 +156,43 @@ export function extCall<
 
 
     /** Logs the error (with infos about the caller) and returns the error message to the client,
-     * being it translated if available. */
+     * being it translated if available. If errorCode isn't specified, defaults to 'internal'. */
+    function ExtError(errorMessage: ErrorDictItem): functions.https.HttpsError;
+    function ExtError(errorMessage: string, errorCode?: functions.https.FunctionsErrorCode): functions.https.HttpsError;
     function ExtError(
-      errorMessage: string | ErrorMessagePerLanguage,
-      errorCode: functions.https.FunctionsErrorCode = 'internal'
-    ) {
+      errorMessage: string | ErrorDictItem,
+      errorCode?: functions.https.FunctionsErrorCode
+    ): functions.https.HttpsError {
+
       calledError = true;
-      return parseExtError({
-        errorCode, caller, data,
-        errorMessage: errorMessageInLanguage({
+
+      if (typeof errorMessage === 'string')
+        return parseExtError({
+          caller, data,
           errorMessage,
-          errorCode,
-          language: caller.language
-        })
-      });
+          errorCode: errorCode ?? 'internal'
+        });
+
+      else
+        return parseExtError({
+          caller, data,
+          errorMessage: errorMessageInLanguage(errorMessage, language),
+          errorCode: errorMessage._code ?? 'internal'
+        });
+
     }
 
     try {
       if (!allowNonAuthed && !caller.isAuthed)
         // TODO: better error differentiation between those two?
-        throw ExtError(commonErrorMessages.authRequired, 'unauthenticated');
+        throw ExtError(commonErrorMessages.authRequired);
 
       if (!allowAnonymous && caller.isAnonymous)
-        throw ExtError(commonErrorMessages.cantBeAnon, 'unauthenticated');
+        throw ExtError(commonErrorMessages.cantBeAnon);
 
       // TODO: add support for zod invalid schema message
       if (!schema.check(data))
-        throw ExtError(commonErrorMessages.invalidArgs, 'invalid-argument');
+        throw ExtError(commonErrorMessages.invalidArgs);
 
       // throw is not needed in InternalExtErrors below, as the ExtError are suposed to be called with throw.
       const auxData: any = {};
@@ -200,37 +210,10 @@ export function extCall<
       if (!calledError) {
         Logger.error(err);
         /** This will change calledError to true, but we already checked/used it. No problem. */
-        throw ExtError(commonErrorMessages.unknown, 'internal');
+        throw ExtError(commonErrorMessages.unknown);
       }
       else // Rethrows the error, that has already been parseExtError'ed.
         throw err;
     }
   });
 }
-
-
-
-
-// Testing:
-// const auxNominal: HandlerF<{ dbId: number; }, obj, { db: string; }> = ({ data }) => {
-//   return { db: data.dbId + '4' };
-// };
-// const auxPromise: HandlerF<{ dbId: number; }, obj, Promise<{ db2: string; }>> = async () => {
-//   await true;
-//   return { db2: '4' };
-// };
-// const auxVoid: HandlerF<{ dbId: number; }, obj> = async () => {
-// };
-// const a = extCall({
-//   zod: z.object({
-//     data: z.number(),
-//     dbId: z.number(),
-//   }),
-//   aux: [
-//     auxNominal,
-//     auxPromise,
-//     auxVoid
-//   ],
-//   handler: ({ auxData }) => { true; }
-// });
-

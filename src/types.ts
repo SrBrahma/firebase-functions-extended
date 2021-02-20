@@ -5,7 +5,7 @@
 import * as functions from 'firebase-functions';
 import * as z from 'zod';
 import { Caller } from '.';
-import { ErrorMessagePerLanguage } from './i18n';
+import { ErrorDictItem } from './i18n';
 import { obj, Id } from './utils';
 
 
@@ -31,7 +31,8 @@ export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   /**
    * Throw this if invalid stuff happens.
    */
-  ExtError: (message: string | ErrorMessagePerLanguage, code?: functions.https.FunctionsErrorCode) => any;
+  ExtError(errorMessage: ErrorDictItem): functions.https.HttpsError;
+  ExtError(errorMessage: string, errorCode?: functions.https.FunctionsErrorCode): functions.https.HttpsError;
 };
 
 // type a = (() => number) extends (() => void) ? true : false // returns true

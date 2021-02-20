@@ -4,16 +4,23 @@ import type { https } from 'firebase-functions';
 
 export type ErrorMessagePerLanguage<Lang extends string = string> = Record<Lang, string>
 
+// FIXME Not accepting generic Langs, error in ExtCall.ts. optional _code causes this. [*1]
+export type ErrorDictItem = {
+  _code?: https.FunctionsErrorCode,
+} & Record<string, string>
+
 export type ErrorsMessagesDict<
-  ErrorId extends string = string,
-  Lang extends string = string
-> = Record<ErrorId, ErrorMessagePerLanguage<Lang>>
+  ErrorIds extends string = string
+> = {
+  [Error in ErrorIds]: ErrorDictItem
+}
 
 
+/** The default language for fallbackLanguage and when caller doesn't specify a language. */
+export const defaultLanguage = 'en';
 
-const defaultLanguage = 'en';
-
-
+/** The language that errorMessageInLanguage uses if the requested one isn't available.
+ * You may change it with setFallbackLanguage. */
 export let fallbackLanguage: string = defaultLanguage;
 
 
@@ -30,21 +37,15 @@ export function setFallbackLanguage(language: string = defaultLanguage): void {
   fallbackLanguage = language;
 }
 
-
-export function errorMessageInLanguage({
-  errorMessage, errorCode, language
-}: {
-  errorMessage: string | ErrorMessagePerLanguage,
-  errorCode: https.FunctionsErrorCode,
+export function errorMessageInLanguage(
+  errorDictItem: ErrorDictItem,
   language: string
-}): string {
-  return typeof errorMessage === 'string'
-    ? errorMessage
-    : (
-      errorMessage[language]
-      ?? errorMessage[fallbackLanguage] // Fallback to fallback language
-      ?? errorMessage[defaultLanguage]  // Fallback to default language ('en')
-      ?? Object.values(errorMessage)[0] // Fallback to the first available language
-      ?? errorCode // Fallback to error code
-    );
+): string {
+  return errorDictItem[language]
+    ?? errorDictItem[fallbackLanguage] // Fallback to fallback language
+    ?? errorDictItem[defaultLanguage]  // Fallback to default language ('en')
+    ?? Object.entries(errorDictItem)   // Fallback to any available language
+      .find(([k]) => k !== '_code')?.[1] // [1] is entry value
+    ?? errorDictItem._code             // Fallback to error code
+    ?? 'Error without message';         // Just to avoid huge fuck ups
 }
