@@ -1,4 +1,10 @@
-# 3.0.1 - January 10th 2020
+# 4.0.0 - February 19th, 2021
+
+* Added i18n!
+* Removed array arg in ExtError
+
+
+# 3.0.1 - January 10th 2021
 
 * Fixed extCall return.
 

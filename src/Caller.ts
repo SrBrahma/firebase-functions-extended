@@ -1,4 +1,5 @@
 // Caller -> The one calling the function.
+
 import type { https } from 'firebase-functions';
 import type { auth } from 'firebase-admin';
 
@@ -7,13 +8,13 @@ import type { auth } from 'firebase-admin';
 export class Caller {
   context: https.CallableContext;
 
-  readonly lang: string;
+  readonly language: string;
   readonly clientVersion: string;
 
 
-  constructor(params: { context: https.CallableContext, lang: string, clientVersion: string; }) {
+  constructor(params: { context: https.CallableContext, language: string, clientVersion: string; }) {
     this.context = params.context;
-    this.lang = params.lang;
+    this.language = params.language;
     this.clientVersion = params.clientVersion;
   }
 

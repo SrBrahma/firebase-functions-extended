@@ -5,6 +5,7 @@
 import * as functions from 'firebase-functions';
 import * as z from 'zod';
 import { Caller } from '.';
+import { ErrorMessagePerLanguage } from './i18n';
 import { obj, Id } from './utils';
 
 
@@ -20,8 +21,6 @@ type Rtn2<T> = T extends ((...args: any) => obj)
     : {}
   );
 
-export type ExtErrorT = [message: string, code?: functions.https.FunctionsErrorCode];
-
 export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   /** The data the client (caller) sent. */
   data: Data;
@@ -32,8 +31,7 @@ export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   /**
    * Throw this if invalid stuff happens.
    */
-  ExtError: (((message: string, code?: functions.https.FunctionsErrorCode) => any)
-    & ((args: ExtErrorT) => any));
+  ExtError: (message: string | ErrorMessagePerLanguage, code?: functions.https.FunctionsErrorCode) => any;
 };
 
 // type a = (() => number) extends (() => void) ? true : false // returns true
