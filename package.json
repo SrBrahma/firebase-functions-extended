@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -d",
+    "prepare": "npm run build",
     "deploy": "npm run build && npm publish",
     "major": "npm --no-git-tag-version version major",
     "majorD": "npm run build && npm run major && npm publish",
@@ -41,6 +42,5 @@
   "peerDependencies": {
     "firebase-functions": "*",
     "zod": "*"
-  },
-  "dependencies": {}
+  }
 }
