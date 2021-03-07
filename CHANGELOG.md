@@ -3,6 +3,7 @@
 * Added i18n!
 * Added some tests
 * Removed array arg in ExtError
+* `data` may now be any Zod shape (could only be an object before). It also is now optional.
 
 
 # 3.0.1 - January 10th 2021
