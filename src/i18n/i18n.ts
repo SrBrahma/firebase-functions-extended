@@ -15,6 +15,9 @@ export type ErrorsMessagesDict<
   [Error in ErrorIds]: ErrorDictItem
 }
 
+export function createErrorsDict<T extends ErrorsMessagesDict>(dict: T) {
+  return dict;
+}
 
 /** The default language for fallbackLanguage and when caller doesn't specify a language. */
 export const defaultLanguage = 'en';
