@@ -1,7 +1,5 @@
 import type { https } from 'firebase-functions';
 
-
-
 export type ErrorMessagePerLanguage<Lang extends string = string> = Record<Lang, string>
 
 // FIXME Not accepting generic Langs, error in ExtCall.ts. optional _code causes this. [*1]
@@ -15,7 +13,7 @@ export type ErrorsMessagesDict<
   [Error in ErrorIds]: ErrorDictItem
 }
 
-export function createErrorsDict<T extends ErrorsMessagesDict>(dict: T) {
+export function createErrorsDict<T extends ErrorsMessagesDict>(dict: T): T {
   return dict;
 }
 

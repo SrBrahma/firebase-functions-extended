@@ -1,4 +1,8 @@
-# 4.0.0 - February 19th, 2021
+# 4.0.2 - March 7th, 2021
+
+* Added ExtError function type as export
+
+# 4.0.0 - March 6th, 2021
 
 * Added i18n!
 * Added some tests

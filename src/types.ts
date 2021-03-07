@@ -21,6 +21,11 @@ type Rtn2<T> = T extends ((...args: any) => obj)
     : {}
   );
 
+export type ExtError = {
+  (errorMessage: ErrorDictItem): functions.https.HttpsError;
+  (errorMessage: string, errorCode?: functions.https.FunctionsErrorCode): functions.https.HttpsError;
+}
+
 export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   /** The data the client (caller) sent. */
   data: Data;
@@ -31,8 +36,7 @@ export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   /**
    * Throw this if invalid stuff happens.
    */
-  ExtError(errorMessage: ErrorDictItem): functions.https.HttpsError;
-  ExtError(errorMessage: string, errorCode?: functions.https.FunctionsErrorCode): functions.https.HttpsError;
+  ExtError: ExtError;
 };
 
 // type a = (() => number) extends (() => void) ? true : false // returns true
