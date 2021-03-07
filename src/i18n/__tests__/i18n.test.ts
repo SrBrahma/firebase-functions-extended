@@ -1,7 +1,7 @@
 import {
   errorMessageInLanguage, ErrorDictItem, fallbackLanguage,
   defaultLanguage, setFallbackLanguage
-} from '../src/i18n';
+} from '../i18n';
 
 const defaultErrorDictItem: ErrorDictItem = {
   _code: 'unavailable',

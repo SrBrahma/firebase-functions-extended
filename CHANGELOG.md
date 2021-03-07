@@ -1,6 +1,7 @@
 # 4.0.0 - February 19th, 2021
 
 * Added i18n!
+* Added some tests
 * Removed array arg in ExtError
 
 

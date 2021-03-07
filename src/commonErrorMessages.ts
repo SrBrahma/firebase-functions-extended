@@ -1,4 +1,4 @@
-import { ErrorsMessagesDict } from './i18n';
+import { ErrorsMessagesDict } from './i18n/i18n';
 import { Id } from './utils';
 
 

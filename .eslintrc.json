@@ -26,6 +26,7 @@
     "@typescript-eslint/no-inferrable-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "comma-spacing": ["warn"],
-    "object-curly-spacing": ["warn", "always"]
+    "object-curly-spacing": ["warn", "always"],
+    "@typescript-eslint/no-empty-function": "off"
   }
 }

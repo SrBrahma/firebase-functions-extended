@@ -5,10 +5,22 @@ import { Caller } from './Caller';
 
 // For multi-line JSON error https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
 import * as Logger from 'firebase-functions/lib/logger';
-import { isObject, obj } from './utils';
+import { isObject } from './utils';
 import type { HandlerF, Joiner } from './types';
-import { ErrorDictItem, errorMessageInLanguage, fallbackLanguage } from './i18n';
+import { ErrorDictItem, errorMessageInLanguage, fallbackLanguage } from './i18n/i18n';
 import { commonErrorMessages } from './commonErrorMessages';
+
+
+/** Converts your data and options with type safety to the CF data object to be sent.
+ *
+ * Will use the Short format options (d, cV, l instead of data, clientVersion, language) */
+export function extData(data?: unknown, options?: ExtOptions): ExtDataProps {
+  return ({
+    d: data,
+    cV: options?.clientVersion,
+    l: options?.language
+  });
+}
 
 
 type onCallRtn = ReturnType<typeof functions.https.onCall>;
@@ -17,7 +29,7 @@ type onCallRtn = ReturnType<typeof functions.https.onCall>;
 let defaultRegion: string | string[];
 let defaultAllowAnonymous: boolean;
 let defaultAllowNonAuthed: boolean;
-
+const defaultClientVersion = '0.0.0';
 
 
 export function parseExtError({ errorMessage, errorCode, data, caller }: {
@@ -75,7 +87,23 @@ export function setExtCallDefaults({
 setExtCallDefaults();
 
 
-
+export type ExtOptions = {
+  language?: string;
+  /** Defaults to `'0.0.0'`, so you can have a SemVar check in your function, even if your
+   * client hasn't set a clientVersion before. */
+  clientVersion?: string;
+}
+type ExtOptionsShort = {
+  /** Same as `language` property, shorter version. */
+  l?: string;
+  /** Same as `clientVersion` property, shorter version. */
+  cV?: string;
+}
+export type ExtDataProps = {
+  data?: unknown;
+  /** Same as `data` property, shorter version. */
+  d?: unknown;
+} & ExtOptions & ExtOptionsShort;
 
 // TODO: Optional zodObj. Won't use now, so leaving it for later
 // TODO: Take the language from data (if there is) and pass it to the caller
@@ -85,22 +113,23 @@ setExtCallDefaults();
  *
  * (will later write this.) */
 export function extCall<
-  Z extends z.ZodType<any>,
-  A extends HandlerF<z.infer<Z>, {}>, // {} = No previous auxData
-  B extends Joiner<Z, A>,
-  C extends Joiner<Z, A, B>,
-  D extends Joiner<Z, A, B, C>,
-  E extends Joiner<Z, A, B, C, D>,
-  F extends Joiner<Z, A, B, C, D, E>,
-  G extends Joiner<Z, A, B, C, D, E, F>,
-  H extends Joiner<Z, A, B, C, D, E, F, G>,
-  I extends Joiner<Z, A, B, C, D, E, F, G, H>
->({ zod: schema, aux, handler,
+A extends HandlerF<z.infer<Z>, {}>, // {} = No previous auxData
+B extends Joiner<Z, A>,
+C extends Joiner<Z, A, B>,
+D extends Joiner<Z, A, B, C>,
+E extends Joiner<Z, A, B, C, D>,
+F extends Joiner<Z, A, B, C, D, E>,
+G extends Joiner<Z, A, B, C, D, E, F>,
+H extends Joiner<Z, A, B, C, D, E, F, G>,
+I extends Joiner<Z, A, B, C, D, E, F, G, H>,
+Z extends z.ZodType<any>,
+>({ zod,
+  aux, handler,
   allowAnonymous = defaultAllowAnonymous,
   allowNonAuthed = defaultAllowNonAuthed,
   region = defaultRegion
 }: {
-  zod: Z,
+  zod?: Z,
   /** An array of auxiliary functions that will be run after the zod validation and before the handler function.
    *
    * Useful for reusing commom checks. To deny the call, use "throw ExtError(...)",
@@ -144,10 +173,16 @@ export function extCall<
     func = functions.region(region);
 
   // clientVersion is useful to tell the client to update his app.
-  return func.https.onCall(async ({
-    data, clientVersion, lang: language = fallbackLanguage }: {
-      data: obj, clientVersion: string, lang: string;
-    }, context) => {
+  return func.https.onCall(async (params: ExtDataProps | undefined, context) => {
+
+    if (!params)
+      params = {};
+
+    const data = params?.d ?? params.data;
+    const clientVersion = params.cV ?? params.clientVersion ??  defaultClientVersion;
+    const language = params.l ?? params.language ?? fallbackLanguage;
+    const schema = zod ?? z.unknown();
+
 
     /** If we called the error or the error was not expected / = uncaught */
     let calledError = false;
@@ -191,8 +226,11 @@ export function extCall<
         throw ExtError(commonErrorMessages.cantBeAnon);
 
       // TODO: add support for zod invalid schema message
-      if (!schema.check(data))
+      if (!schema.check(data)) {
+        // const res = schema.safeParse(data as any);
+        // console.log('DETAILED SCHEMA ERROR', ((res as any).error as ZodError).message);
         throw ExtError(commonErrorMessages.invalidArgs);
+      }
 
       // throw is not needed in InternalExtErrors below, as the ExtError are suposed to be called with throw.
       const auxData: any = {};

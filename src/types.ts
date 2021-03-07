@@ -5,7 +5,7 @@
 import * as functions from 'firebase-functions';
 import * as z from 'zod';
 import { Caller } from '.';
-import { ErrorDictItem } from './i18n';
+import { ErrorDictItem } from './i18n/i18n';
 import { obj, Id } from './utils';
 
 
