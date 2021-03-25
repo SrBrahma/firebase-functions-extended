@@ -8,7 +8,7 @@
 
 An opinionated, abstracted and simplified way to create Google Cloud Functions.
 
-Project not ready yet! Still fixing bugs and writing this README. Should be ready in a couple of weeks. I am using it in a real project, so the presentation of this one isn't the focus right now.
+Project is ready and being used in prod. It's really good :') However, won't write this README for now. You may adventure yourself with Intellisense.
 
 Implements common functionalities to the Cloud Functions onCall, including schema declaration and validation (using zod), error throwing and better caller information access. Typescript is recommended!
 
@@ -29,5 +29,3 @@ It also requires the installation of [firebase-functions](https://github.com/fir
 # Roadmap
 
 * Write this README
-
-* Internationalization -> Also add way to change error string to invalid anonymous caller and invalid args error
