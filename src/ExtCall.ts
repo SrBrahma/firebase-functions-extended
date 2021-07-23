@@ -11,6 +11,7 @@ import { ErrorDictItem, errorMessageInLanguage, fallbackLanguage } from './i18n/
 import { commonErrorMessages } from './commonErrorMessages';
 
 
+// TODO how to add it to the client, without needing Logger / peer of firebase-functions?
 /** Converts your data and options with type safety to the CF data object to be sent.
  *
  * Will use the Short format options (d, cV, l instead of data, clientVersion, language) */
