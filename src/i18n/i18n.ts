@@ -1,17 +1,17 @@
 import type { https } from 'firebase-functions';
 
-export type ErrorMessagePerLanguage<Lang extends string = string> = Record<Lang, string>
+export type ErrorMessagePerLanguage<Lang extends string = string> = Record<Lang, string>;
 
 // FIXME Not accepting generic Langs, error in ExtCall.ts. optional _code causes this. [*1]
 export type ErrorDictItem = {
-  _code?: https.FunctionsErrorCode,
-} & Record<string, string>
+  _code?: https.FunctionsErrorCode;
+} & Record<string, string>;
 
 export type ErrorsMessagesDict<
-  ErrorIds extends string = string
+  ErrorIds extends string = string,
 > = {
   [Error in ErrorIds]: ErrorDictItem
-}
+};
 
 export function createErrorsDict<T extends ErrorsMessagesDict>(dict: T): T {
   return dict;
@@ -40,13 +40,13 @@ export function setFallbackLanguage(language: string = defaultLanguage): void {
 
 export function errorMessageInLanguage(
   errorDictItem: ErrorDictItem,
-  language: string
+  language: string,
 ): string {
   return errorDictItem[language]
     ?? errorDictItem[fallbackLanguage] // Fallback to fallback language
-    ?? errorDictItem[defaultLanguage]  // Fallback to default language ('en')
-    ?? Object.entries(errorDictItem)   // Fallback to any available language
+    ?? errorDictItem[defaultLanguage] // Fallback to default language ('en')
+    ?? Object.entries(errorDictItem) // Fallback to any available language
       .find(([k]) => k !== '_code')?.[1] // [1] is entry value
-    ?? errorDictItem._code             // Fallback to error code
-    ?? 'Error without message';         // Just to avoid huge fuck ups
+    ?? errorDictItem._code // Fallback to error code
+    ?? 'Error without message'; // Just to avoid huge fuck ups
 }

@@ -12,7 +12,7 @@ export class Caller {
   readonly clientVersion: string;
 
 
-  constructor(params: { context: https.CallableContext, language: string, clientVersion: string; }) {
+  constructor(params: { context: https.CallableContext; language: string; clientVersion: string }) {
     this.context = params.context;
     this.language = params.language;
     this.clientVersion = params.clientVersion;

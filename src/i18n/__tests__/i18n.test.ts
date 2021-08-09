@@ -1,13 +1,13 @@
 import {
   errorMessageInLanguage, ErrorDictItem, fallbackLanguage,
-  defaultLanguage, setFallbackLanguage
+  defaultLanguage, setFallbackLanguage,
 } from '../i18n';
 
 const defaultErrorDictItem: ErrorDictItem = {
   _code: 'unavailable',
   [fallbackLanguage]: 'fallback',
   lang1: 'Lang1',
-  lang2: 'Lang2'
+  lang2: 'Lang2',
 };
 
 describe('i18n', () => {
@@ -24,7 +24,7 @@ describe('i18n', () => {
     const errorDictItem: ErrorDictItem = {
       _code: 'aborted',
       [defaultLanguage]: 'default',
-      Lang1: 'Lang1'
+      Lang1: 'Lang1',
     };
     setFallbackLanguage('invalidLang1');
     expect(errorMessageInLanguage(errorDictItem, 'invalidLang2')).toBe(errorDictItem[defaultLanguage]);
@@ -33,7 +33,7 @@ describe('i18n', () => {
   test('fallback to any lang', () => {
     const errorDictItem: ErrorDictItem = {
       _code: 'aborted',
-      Lang1: 'Lang1'
+      Lang1: 'Lang1',
     };
     expect(errorMessageInLanguage(errorDictItem, 'invalidLang')).toBe(errorDictItem['Lang1']);
   });
@@ -47,7 +47,7 @@ describe('i18n', () => {
     const errorDictItem: ErrorDictItem = {
       _code: 'aborted',
       [fallbackLanguage]: 'default',
-      newFallbackLang: 'new'
+      newFallbackLang: 'new',
     };
     expect(errorMessageInLanguage(errorDictItem, fallbackLanguage)).toBe(errorDictItem[fallbackLanguage]);
     setFallbackLanguage('newFallbackLang');

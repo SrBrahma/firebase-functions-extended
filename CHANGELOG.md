@@ -1,3 +1,9 @@
+# 5.0.0 - 2021/08/09
+
+* Updated zod from v1 to v3.
+* Code lint
+* Removed test files from package distribution files
+
 # 4.0.2 - March 7th, 2021
 
 * Added ExtError function type as export

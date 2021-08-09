@@ -19,7 +19,7 @@ export function extData(data?: unknown, options?: ExtOptions): ExtDataProps {
   return ({
     d: data,
     cV: options?.clientVersion,
-    l: options?.language
+    l: options?.language,
   });
 }
 
@@ -34,17 +34,17 @@ const defaultClientVersion = '0.0.0';
 
 
 export function parseExtError({ errorMessage, errorCode, data, caller }: {
-  errorMessage: string, // | ExtError
-  errorCode: functions.https.FunctionsErrorCode,
-  data: any,
-  caller: Caller
+  errorMessage: string; // | ExtError
+  errorCode: functions.https.FunctionsErrorCode;
+  data: any;
+  caller: Caller;
 }): functions.https.HttpsError {
   // We use this Logger because at the current moment,
   // Cloud Functions doesn't allow multi-line errors without this.
   // https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
   // _callerToken with _ to keep it on the end of the json for better readibility on firebase console
   Logger.error(new Error(JSON.stringify({
-    errorCode, data, errorMessage, _callerToken: caller.token
+    errorCode, data, errorMessage, _callerToken: caller.token,
   }, null, 2))); // Make the JSON pretty with 2-space-identation and new lines
 
   return new functions.https.HttpsError(errorCode, errorMessage);
@@ -93,13 +93,13 @@ export type ExtOptions = {
   /** Defaults to `'0.0.0'`, so you can have a SemVar check in your function, even if your
    * client hasn't set a clientVersion before. */
   clientVersion?: string;
-}
+};
 type ExtOptionsShort = {
   /** Same as `language` property, shorter version. */
   l?: string;
   /** Same as `clientVersion` property, shorter version. */
   cV?: string;
-}
+};
 export type ExtDataProps = {
   data?: unknown;
   /** Same as `data` property, shorter version. */
@@ -124,13 +124,14 @@ G extends Joiner<Z, A, B, C, D, E, F>,
 H extends Joiner<Z, A, B, C, D, E, F, G>,
 I extends Joiner<Z, A, B, C, D, E, F, G, H>,
 Z extends z.ZodType<any>,
->({ zod,
+>({
+  zod,
   aux, handler,
   allowAnonymous = defaultAllowAnonymous,
   allowNonAuthed = defaultAllowNonAuthed,
-  region = defaultRegion
+  region = defaultRegion,
 }: {
-  zod?: Z,
+  zod?: Z;
   /** An array of auxiliary functions that will be run after the zod validation and before the handler function.
    *
    * Useful for reusing commom checks. To deny the call, use "throw ExtError(...)",
@@ -142,7 +143,7 @@ Z extends z.ZodType<any>,
   aux?: [A?, B?, C?, D?, E?, F?, G?, H?, I?];
 
   /** Your main function that will be run after the zod validation and after the aux functions execution, if any. */
-  handler: Joiner<Z, A, B, C, D, E, F, G, H, I, any>,
+  handler: Joiner<Z, A, B, C, D, E, F, G, H, I, any>;
 
   /** If anonymous authed users can execute the functions.  Throws error if false and caller is anonymous.
    *
@@ -180,7 +181,7 @@ Z extends z.ZodType<any>,
       params = {};
 
     const data = params?.d ?? params.data;
-    const clientVersion = params.cV ?? params.clientVersion ??  defaultClientVersion;
+    const clientVersion = params.cV ?? params.clientVersion ?? defaultClientVersion;
     const language = params.l ?? params.language ?? fallbackLanguage;
     const schema = zod ?? z.unknown();
 
@@ -197,7 +198,7 @@ Z extends z.ZodType<any>,
     function ExtError(errorMessage: string, errorCode?: functions.https.FunctionsErrorCode): functions.https.HttpsError;
     function ExtError(
       errorMessage: string | ErrorDictItem,
-      errorCode?: functions.https.FunctionsErrorCode
+      errorCode?: functions.https.FunctionsErrorCode,
     ): functions.https.HttpsError {
 
       calledError = true;
@@ -206,14 +207,14 @@ Z extends z.ZodType<any>,
         return parseExtError({
           caller, data,
           errorMessage,
-          errorCode: errorCode ?? 'internal'
+          errorCode: errorCode ?? 'internal',
         });
 
       else
         return parseExtError({
           caller, data,
           errorMessage: errorMessageInLanguage(errorMessage, language),
-          errorCode: errorMessage._code ?? 'internal'
+          errorCode: errorMessage._code ?? 'internal',
         });
 
     }
@@ -227,7 +228,9 @@ Z extends z.ZodType<any>,
         throw ExtError(commonErrorMessages.cantBeAnon);
 
       // TODO: add support for zod invalid schema message
-      if (!schema.check(data)) {
+      const schemaResult = schema.safeParse(data);
+      if (!schemaResult.success) {
+        // schemaResult.error.
         // const res = schema.safeParse(data as any);
         // console.log('DETAILED SCHEMA ERROR', ((res as any).error as ZodError).message);
         throw ExtError(commonErrorMessages.invalidArgs);
@@ -244,14 +247,12 @@ Z extends z.ZodType<any>,
         }
 
       return await handler?.({ data, caller, ExtError, auxData });
-    }
-    catch (err) {
+    } catch (err) {
       if (!calledError) {
         Logger.error(err);
         /** This will change calledError to true, but we already checked/used it. No problem. */
         throw ExtError(commonErrorMessages.unknown);
-      }
-      else // Rethrows the error, that has already been parseExtError'ed.
+      } else // Rethrows the error, that has already been parseExtError'ed.
         throw err;
     }
   });

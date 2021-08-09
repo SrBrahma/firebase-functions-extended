@@ -11,7 +11,7 @@ export enum CommonErrorsId {
   invalidArgs = 'invalidArgs',
   /** An error was throw inside your extCall function but you didn't created it with new ExtError,
    * so it's an unintended / uncaught error */
-  unknown = 'unknown'
+  unknown = 'unknown',
 }
 
 // Unused until ./i18n/[*1] fix
@@ -44,7 +44,7 @@ export const defaultCommonErrorMessagesDict: Id<ErrorsMessagesDict<CommonErrorsI
     _code: 'internal',
     en: 'An error occurred in the server, try again.',
     pt: 'Ocorreu um erro no servidor, tente novamente.',
-  }
+  },
 };
 
 export let commonErrorMessages = defaultCommonErrorMessagesDict;
@@ -56,7 +56,7 @@ export let commonErrorMessages = defaultCommonErrorMessagesDict;
  *
  * @default - the default dictionary. No need to call this function to set it if not changed. */
 export function setCommonErrorMessagesDict(
-  dict: ErrorsMessagesDict<CommonErrorsId> = defaultCommonErrorMessagesDict
+  dict: ErrorsMessagesDict<CommonErrorsId> = defaultCommonErrorMessagesDict,
 ): void {
   commonErrorMessages = dict;
 }

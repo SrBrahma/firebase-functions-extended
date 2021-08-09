@@ -24,7 +24,7 @@ type Rtn2<T> = T extends ((...args: any) => obj)
 export type ExtError = {
   (errorMessage: ErrorDictItem): functions.https.HttpsError;
   (errorMessage: string, errorCode?: functions.https.FunctionsErrorCode): functions.https.HttpsError;
-}
+};
 
 export type Handler<Data extends obj = obj, AuxData extends obj = obj> = {
   /** The data the client (caller) sent. */
@@ -55,7 +55,7 @@ export type Joiner<
   G extends HandlerF<obj, any> = HandlerF<obj, {}, {}>,
   H extends HandlerF<obj, any> = HandlerF<obj, {}, {}>,
   I extends HandlerF<obj, any> = HandlerF<obj, {}, {}>,
-  R = obj | void | Promise<any>
+  R = obj | void | Promise<any>,
   > =
   HandlerF<
     z.infer<Z>,

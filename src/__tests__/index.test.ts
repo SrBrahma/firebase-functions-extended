@@ -23,7 +23,7 @@ const fn1 = extCall({
   handler: ({ data, ExtError }) => {
     if (data.v === 0) return 'zero';
     else throw ExtError({ _code: 'invalid-argument', pt: fn1ErrorPt, en: fn1ErrorEn });
-  }
+  },
 });
 
 async function authedCall(fn: CloudFunction<any>, data?: unknown, options?: ExtOptions) {
@@ -42,12 +42,11 @@ describe('index', () => {
     test.cleanup(); // https://firebase.google.com/docs/functions/unit-testing#test_cleanup
   });
 
-
   it('should run a function that doesn\'t require authentication', () => {
     expect(test.wrap(nonAuthedFn)(undefined)).resolves;
   });
-  it('should not run a function that requires authentication and user is not authenticated', () => {
-    expect(test.wrap(authedFn)(undefined)).rejects.toThrow(); // why is toThrow needed?
+  it('should not run a function that requires authentication and user is not authenticated', async () => {
+    await expect(test.wrap(authedFn)(undefined)).rejects.toThrow(); // why is toThrow needed?
   });
   it('should run a function that requires authentication and user is authenticated', () => {
     expect(authedCall(authedFn)).resolves;
@@ -55,43 +54,42 @@ describe('index', () => {
   it('should run a function with zod schema and valid data', () => {
     expect(authedCall(fn1, { v: 0 })).resolves;
   });
-  it('should not run a function with zod schema and invalid data', () => {
-    expect(authedCall(fn1, { v: 'no-no' })).rejects.toThrow();
+  it('should not run a function with zod schema and invalid data', async () => {
+    await expect(authedCall(fn1, { v: 'no-no' })).rejects.toThrow();
   });
-  it('should use client default language', () => {
-    expect(authedCall(fn1, { v: 1 })).rejects.toThrow(fn1ErrorEn);
+  it('should use client default language', async () => {
+    await expect(authedCall(fn1, { v: 1 })).rejects.toThrow(fn1ErrorEn);
   });
-  it('should use client custom language', () => {
-    expect(authedCall(fn1, { v: 1 }, { language: 'pt' })).rejects.toThrow(fn1ErrorPt);
+  it('should use client custom language', async () => {
+    await expect(authedCall(fn1, { v: 1 }, { language: 'pt' })).rejects.toThrow(fn1ErrorPt);
   });
-  it('should use server custom default language', () => {
+  it('should use server custom default language', async () => {
     setFallbackLanguage('pt');
-    expect(authedCall(fn1, { v: 1 })).rejects.toThrow(fn1ErrorPt);
+    await expect(authedCall(fn1, { v: 1 })).rejects.toThrow(fn1ErrorPt);
   });
 
 });
 
 
-// // Testing:
-// // const auxNominal: HandlerF<{ dbId: number; }, obj, { db: string; }> = ({ data }) => {
-// //   return { db: data.dbId + '4' };
-// // };
-// // const auxPromise: HandlerF<{ dbId: number; }, obj, Promise<{ db2: string; }>> = async () => {
-// //   await true;
-// //   return { db2: '4' };
-// // };
-// // const auxVoid: HandlerF<{ dbId: number; }, obj> = async () => {
-// // };
-// // const a = extCall({
-// //   zod: z.object({
-// //     data: z.number(),
-// //     dbId: z.number(),
-// //   }),
-// //   aux: [
-// //     auxNominal,
-// //     auxPromise,
-// //     auxVoid
-// //   ],
-// //   handler: ({ auxData }) => { true; }
-// // });
-
+// Testing:
+// const auxNominal: HandlerF<{ dbId: number; }, obj, { db: string; }> = ({ data }) => {
+//   return { db: data.dbId + '4' };
+// };
+// const auxPromise: HandlerF<{ dbId: number; }, obj, Promise<{ db2: string; }>> = async () => {
+//   await true;
+//   return { db2: '4' };
+// };
+// const auxVoid: HandlerF<{ dbId: number; }, obj> = async () => {
+// };
+// const a = extCall({
+//   zod: z.object({
+//     data: z.number(),
+//     dbId: z.number(),
+//   }),
+//   aux: [
+//     auxNominal,
+//     auxPromise,
+//     auxVoid
+//   ],
+//   handler: ({ auxData }) => { true; }
+// });
