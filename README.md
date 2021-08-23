@@ -8,7 +8,7 @@
 
 An opinionated, abstracted and simplified way to create Google Cloud Functions.
 
-Project is ready and being used in prod. It's really good :') However, won't write this README for now, will do it in 1-2 months. You may adventure yourself with Intellisense.
+Project is ready and being used in prod and in-dev projects. It's really good and useful for me, but currently I have no will to better prepare it to publicly publishi it.
 
 Implements common functionalities to the Cloud Functions onCall, including schema declaration and validation (using zod), error throwing and better caller information access. Typescript is recommended!
 
