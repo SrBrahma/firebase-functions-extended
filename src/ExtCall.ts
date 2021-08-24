@@ -1,24 +1,19 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import * as functions from 'firebase-functions';
-import * as z from 'zod';
-import { Caller } from './Caller';
-
 // For multi-line JSON error https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
 import * as Logger from 'firebase-functions/lib/logger';
-import { isObject } from './utils';
-import type { HandlerF, Joiner } from './types';
+import * as z from 'zod';
 import { ErrorDictItem, errorMessageInLanguage, fallbackLanguage } from './i18n/i18n';
+import { Caller } from './Caller';
 import { commonErrorMessages } from './commonErrorMessages';
+import type { HandlerF, Joiner } from './types';
+import { isObject } from './utils';
 
 
 
 type onCallRtn = ReturnType<typeof functions.https.onCall>;
 
 
-let defaultRegion: string | string[];
-let defaultAllowAnonymous: boolean;
-let defaultAllowNonAuthed: boolean;
-const defaultClientVersion = '0.0.0';
 
 
 export function parseExtError({ errorMessage, errorCode, data, caller }: {
@@ -39,6 +34,10 @@ export function parseExtError({ errorMessage, errorCode, data, caller }: {
 }
 
 
+let defaultRegion: string | string[];
+let defaultAllowAnonymous: boolean;
+let defaultAllowNonAuthed: boolean;
+const defaultClientVersion = '0.0.0';
 
 
 /**
@@ -153,7 +152,10 @@ Z extends z.ZodType<any>,
    * https://firebase.google.com/docs/functions/locations#best_practices_for_changing_region */
   region?: string | string[];
 
-}): onCallRtn {
+}): onCallRtn & {
+  /** Note that this actually doesn't exists as data, it is only a type designed to type safe your client calls. */
+  _argsType: z.infer<Z>;
+} {
 
   let func;
 
@@ -163,7 +165,8 @@ Z extends z.ZodType<any>,
     func = functions.region(region);
 
   // clientVersion is useful to tell the client to update his app.
-  return func.https.onCall(async (params: ExtDataProps | undefined, context) => {
+
+  const rtn = func.https.onCall(async (params: ExtDataProps | undefined, context) => {
 
     if (!params)
       params = {};
@@ -244,4 +247,6 @@ Z extends z.ZodType<any>,
         throw err;
     }
   });
+
+  return rtn as any;
 }

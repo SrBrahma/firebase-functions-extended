@@ -4,9 +4,9 @@
 // Must be * as X for functions and zod, else, error in downloaded package
 import * as functions from 'firebase-functions';
 import * as z from 'zod';
-import { Caller } from '.';
 import { ErrorDictItem } from './i18n/i18n';
-import { obj, Id } from './utils';
+import { Id, obj } from './utils';
+import { Caller } from '.';
 
 
 // Thanks to https://stackoverflow.com/a/49889856/10247962

@@ -1,6 +1,6 @@
 import {
-  errorMessageInLanguage, ErrorDictItem, fallbackLanguage,
-  defaultLanguage, setFallbackLanguage,
+  defaultLanguage, ErrorDictItem, errorMessageInLanguage, fallbackLanguage,
+  setFallbackLanguage,
 } from '../i18n';
 
 const defaultErrorDictItem: ErrorDictItem = {

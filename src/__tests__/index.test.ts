@@ -1,10 +1,10 @@
-import FunctionsTest from 'firebase-functions-test';
-import { extCall, extData, ExtOptions, setFallbackLanguage } from '../index';
-import * as z from 'zod';
 import { CloudFunction } from 'firebase-functions';
+import FunctionsTest from 'firebase-functions-test';
+import * as z from 'zod';
+import { ExtDataProps } from '../ExtCall';
+import { extCall, ExtOptions, setFallbackLanguage } from '../index';
 const test = FunctionsTest();
 
-// jest.mock('firebase-admin');
 
 const nonAuthedFn = extCall({
   handler: () => { return; },
@@ -15,6 +15,14 @@ const authedFn = extCall({
   allowNonAuthed: false,
 });
 
+// was in index but now only in client pkg
+function extData(data?: unknown, options?: ExtOptions): ExtDataProps {
+  return ({
+    d: data,
+    cV: options?.clientVersion,
+    l: options?.language,
+  });
+}
 
 const fn1ErrorPt = 'Não é zero';
 const fn1ErrorEn = 'Not zero';
@@ -25,6 +33,8 @@ const fn1 = extCall({
     else throw ExtError({ _code: 'invalid-argument', pt: fn1ErrorPt, en: fn1ErrorEn });
   },
 });
+
+
 
 async function authedCall(fn: CloudFunction<any>, data?: unknown, options?: ExtOptions) {
   await test.wrap(fn)(extData(data, options), { auth: { uid: 'uid' } });

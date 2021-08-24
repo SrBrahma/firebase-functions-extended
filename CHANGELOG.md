@@ -1,4 +1,7 @@
-# 5.0.0 - 2021/08/09
+# 5.1.0 - 2021-08-24
+* Added _argsType type to extCall.
+
+# 5.0.0 - 2021-08-09
 
 * Updated zod from v1 to v3.
 * Code lint

@@ -23,7 +23,8 @@ module.exports = {
   "ignorePatterns": [
     "/lib/**/*", // Ignore built files.
     "/dist/**/*",
-    "/.eslintrc.js" // Ignore itself
+    "/.eslintrc.js", // Ignore itself
+    "tsconfig.json"
   ],
   "rules": {
   }
