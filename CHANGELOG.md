@@ -1,3 +1,6 @@
+# 5.2.0 - 2021-08-24
+* zod schema now defaults to undefined.
+
 # 5.1.0 - 2021-08-24
 * Added _argsType type to extCall.
 

@@ -34,6 +34,13 @@ const fn1 = extCall({
   },
 });
 
+// const fn2 = extCall({
+//   // zod: z.object({ v: z.number() }),
+//   handler: ({ data, ExtError }) => {
+//     if (data.v === 0) return 'zero';
+//     else throw ExtError({ _code: 'invalid-argument', pt: fn1ErrorPt, en: fn1ErrorEn });
+//   },
+// });
 
 
 async function authedCall(fn: CloudFunction<any>, data?: unknown, options?: ExtOptions) {

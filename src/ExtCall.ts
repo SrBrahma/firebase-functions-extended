@@ -110,9 +110,9 @@ F extends Joiner<Z, A, B, C, D, E>,
 G extends Joiner<Z, A, B, C, D, E, F>,
 H extends Joiner<Z, A, B, C, D, E, F, G>,
 I extends Joiner<Z, A, B, C, D, E, F, G, H>,
-Z extends z.ZodType<any>,
+Z extends z.ZodType<any> = z.ZodUndefined,
 >({
-  zod,
+  zod = z.undefined() as any, // as any needed to remove init error
   aux, handler,
   allowAnonymous = defaultAllowAnonymous,
   allowNonAuthed = defaultAllowNonAuthed,
