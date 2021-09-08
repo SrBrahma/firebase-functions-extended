@@ -12,7 +12,7 @@ Project is ready and being used in prod and in-dev projects. It's really good an
 
 Implements common functionalities to the Cloud Functions onCall, including schema declaration and validation (using zod), error throwing and better caller information access. Typescript is recommended!
 
-Note: undefined properties are converted to null by firebase. Instead of using .optional(), use [.nullish()](https://github.com/colinhacks/zod#nullish).
+Note: undefined properties are converted to null by firebase. Instead of using .optional(), use .nullable() if or [.nullish()](https://github.com/colinhacks/zod#nullish). .nullish() is better as you may not declare the props (and they will be undefined) in question or pass undefined (that will turn to null).
 
 # Installation
 
