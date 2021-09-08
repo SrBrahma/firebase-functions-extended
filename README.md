@@ -8,7 +8,7 @@
 
 An opinionated, abstracted and simplified way to create Google Cloud Functions.
 
-Project is ready and being used in prod and in-dev projects. It's really good and useful for me, but currently I have no will to better prepare it to publicly publishi it.
+Project is ready and being used in prod and in-dev projects. It's really good and useful for me, but currently I have no will to better prepare it to publicly publish it.
 
 Implements common functionalities to the Cloud Functions onCall, including schema declaration and validation (using zod), error throwing and better caller information access. Typescript is recommended!
 
@@ -24,7 +24,7 @@ or
 
 `yarn add firebase-functions-extended`
 
-It also requires the installation of [firebase-functions](https://github.com/firebase/firebase-functions) and [zod](https://github.com/vriad/zod). Zod v2 beta isn't working right now, use ^v1.
+It also requires the installation of [firebase-functions](https://github.com/firebase/firebase-functions) and [zod](https://github.com/vriad/zod).
 
 # Usage
 
