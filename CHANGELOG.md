@@ -1,3 +1,6 @@
+# 5.4.0
+* Added invalid arguments detailed but still somewhat pretty and user friendly info.
+
 # 5.3.0 - 2021-10-05
 * Added _rtnType type to extCall return.
 

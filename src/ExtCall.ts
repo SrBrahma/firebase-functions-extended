@@ -223,10 +223,9 @@ Z extends z.ZodType<any> = z.ZodUndefined,
       // TODO: add support for zod invalid schema message
       const schemaResult = schema.safeParse(data);
       if (!schemaResult.success) {
-        // schemaResult.error.
-        // const res = schema.safeParse(data as any);
-        // console.log('DETAILED SCHEMA ERROR', ((res as any).error as ZodError).message);
-        throw ExtError(commonErrorMessages.invalidArgs);
+        // https://github.com/colinhacks/zod/blob/master/ERROR_HANDLING.md
+        const message = Object.entries(schemaResult.error.flatten().fieldErrors).map(([field, errors]) => `${field} - ${errors.join('.')}`).join(('\r\n'));
+        throw ExtError(`${errorMessageInLanguage(commonErrorMessages.invalidArgs, language)}\n\n${message}`, 'invalid-argument');
       }
 
       // throw is not needed in InternalExtErrors below, as the ExtError are suposed to be called with throw.
