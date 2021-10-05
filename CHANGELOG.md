@@ -1,4 +1,4 @@
-# 5.4.0
+# 5.4.0 - 2021-10-05
 * Added invalid arguments detailed but still somewhat pretty and user friendly info.
 
 # 5.3.0 - 2021-10-05
