@@ -1,8 +1,11 @@
+# 5.3.0 - 2021-10-05
+* Added _rtnType type to extCall return.
+
 # 5.2.0 - 2021-08-24
 * zod schema now defaults to undefined.
 
 # 5.1.0 - 2021-08-24
-* Added _argsType type to extCall.
+* Added _argsType type to extCall return.
 
 # 5.0.0 - 2021-08-09
 

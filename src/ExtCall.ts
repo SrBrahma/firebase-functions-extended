@@ -110,6 +110,7 @@ F extends Joiner<Z, A, B, C, D, E>,
 G extends Joiner<Z, A, B, C, D, E, F>,
 H extends Joiner<Z, A, B, C, D, E, F, G>,
 I extends Joiner<Z, A, B, C, D, E, F, G, H>,
+Handler extends Joiner<Z, A, B, C, D, E, F, G, H, I, any>,
 Z extends z.ZodType<any> = z.ZodUndefined,
 >({
   zod = z.undefined() as any, // as any needed to remove init error
@@ -130,7 +131,7 @@ Z extends z.ZodType<any> = z.ZodUndefined,
   aux?: [A?, B?, C?, D?, E?, F?, G?, H?, I?];
 
   /** Your main function that will be run after the zod validation and after the aux functions execution, if any. */
-  handler: Joiner<Z, A, B, C, D, E, F, G, H, I, any>;
+  handler: Handler;
 
   /** If anonymous authed users can execute the functions.  Throws error if false and caller is anonymous.
    *
@@ -155,6 +156,7 @@ Z extends z.ZodType<any> = z.ZodUndefined,
 }): onCallRtn & {
   /** Note that this actually doesn't exists as data, it is only a type designed to type safe your client calls. */
   _argsType: z.infer<Z>;
+  _rtnType: ReturnType<Handler>;
 } {
 
   let func;
