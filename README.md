@@ -28,6 +28,8 @@ It also requires the installation of [firebase-functions](https://github.com/fir
 
 # Usage
 
+In your client, use [firebase-functions-extended-client](https://github.com/SrBrahma/firebase-functions-extended-client) to call the functions.
+
 # Roadmap
 
 * Write this README
