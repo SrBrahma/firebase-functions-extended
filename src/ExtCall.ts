@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import * as functions from 'firebase-functions';
-// For multi-line JSON error https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
-import * as Logger from 'firebase-functions/lib/logger';
 import * as z from 'zod';
 import { ErrorDictItem, errorMessageInLanguage, fallbackLanguage } from './i18n/i18n';
 import { Caller } from './Caller';
@@ -9,6 +7,8 @@ import { commonErrorMessages } from './commonErrorMessages';
 import type { HandlerF, Joiner } from './types';
 import { isObject } from './utils';
 
+
+// If multiline error still not fixed: https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
 
 
 type onCallRtn = ReturnType<typeof functions.https.onCall>;
@@ -26,9 +26,9 @@ export function parseExtError({ errorMessage, errorCode, data, caller }: {
   // Cloud Functions doesn't allow multi-line errors without this.
   // https://github.com/firebase/firebase-functions/issues/612#issuecomment-648384797
   // _callerToken with _ to keep it on the end of the json for better readibility on firebase console
-  Logger.error(new Error(JSON.stringify({
-    errorCode, data, errorMessage, _callerToken: caller.token,
-  }, null, 2))); // Make the JSON pretty with 2-space-identation and new lines
+  functions.logger.error(new Error(errorMessage), {
+    errorMessage, errorCode, data, callerToken: caller.token,
+  });
 
   return new functions.https.HttpsError(errorCode, errorMessage);
 }
@@ -209,12 +209,10 @@ Z extends z.ZodType<any> = z.ZodUndefined,
           errorMessage: errorMessageInLanguage(errorMessage, language),
           errorCode: errorMessage._code ?? 'internal',
         });
-
     }
 
     try {
       if (!allowNonAuthed && !caller.isAuthed)
-        // TODO: better error differentiation between those two?
         throw ExtError(commonErrorMessages.authRequired);
 
       if (!allowAnonymous && caller.isAnonymous)
@@ -241,7 +239,7 @@ Z extends z.ZodType<any> = z.ZodUndefined,
       return await handler?.({ data, caller, ExtError, auxData });
     } catch (err) {
       if (!calledError) {
-        Logger.error(err);
+        functions.logger.error(err);
         /** This will change calledError to true, but we already checked/used it. No problem. */
         throw ExtError(commonErrorMessages.unknown);
       } else // Rethrows the error, that has already been parseExtError'ed.

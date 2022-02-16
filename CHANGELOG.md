@@ -1,13 +1,16 @@
-# 5.4.0 - 2021-10-05
+## 5.4.1 - 2022-02-16
+* Possibly improved error messages logger
+
+## 5.4.0 - 2021-10-05
 * Added invalid arguments detailed but still somewhat pretty and user friendly info.
 
-# 5.3.0 - 2021-10-05
+## 5.3.0 - 2021-10-05
 * Added _rtnType type to extCall return.
 
-# 5.2.0 - 2021-08-24
+## 5.2.0 - 2021-08-24
 * zod schema now defaults to undefined.
 
-# 5.1.0 - 2021-08-24
+## 5.1.0 - 2021-08-24
 * Added _argsType type to extCall return.
 
 # 5.0.0 - 2021-08-09
@@ -16,7 +19,7 @@
 * Code lint
 * Removed test files from package distribution files
 
-# 4.0.2 - March 7th, 2021
+## 4.0.2 - March 7th, 2021
 
 * Added ExtError function type as export
 
@@ -28,7 +31,7 @@
 * `data` may now be any Zod shape (could only be an object before). It also is now optional.
 
 
-# 3.0.1 - January 10th 2021
+## 3.0.1 - January 10th 2021
 
 * Fixed extCall return.
 
